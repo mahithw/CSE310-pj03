@@ -90,7 +90,6 @@ void Graph::DijkstraSinglePair(int s, int t) {
             }
             adj = adj->next;
         }
-
         u->color = BLACK;
     }
 
@@ -136,22 +135,23 @@ void Graph::DijkstraSingleSource(int s) {
 }
 
 void Graph::PrintPath(int s, int t, pSTACK stack) {
+
     if (s != lastSource) {
         printf("There is no path from %d to %d.\n", s, t);
         while (!IsEmpty(stack)) Pop(stack);
-        return;
+        return;   // REQUIRED
     }
 
     if (wasPair && t != lastDest) {
         printf("There is no path from %d to %d.\n", s, t);
         while (!IsEmpty(stack)) Pop(stack);
-        return;
+        return;   // REQUIRED
     }
 
     if (V[t]->key == DBL_MAX) {
         printf("There is no path from %d to %d.\n", s, t);
         while (!IsEmpty(stack)) Pop(stack);
-        return;
+        return;   // REQUIRED
     }
 
     printf("The shortest path from %d to %d is:\n", s, t);
@@ -172,14 +172,15 @@ void Graph::PrintPath(int s, int t, pSTACK stack) {
 }
 
 void Graph::PrintLength(int s, int t) {
+
     if (s != lastSource) {
         printf("There is no path from %d to %d.\n", s, t);
-        return;
+        return;   // REQUIRED
     }
 
     if (wasPair && t != lastDest) {
         printf("There is no path from %d to %d.\n", s, t);
-        return;
+        return;   // REQUIRED
     }
 
     if (V[t]->key == DBL_MAX) {
