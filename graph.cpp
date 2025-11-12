@@ -10,6 +10,9 @@ Graph::Graph(int n) {
         V[i] = (pVERTEX)calloc(1, sizeof(VERTEX));
         V[i]->index = i;
     }
+    lastSource = -1;
+    lastDest = -1;
+    wasPair = false;
 }
 
 void Graph::AddEdge(int u, int v, int idx, double w, bool toFront) {
@@ -18,7 +21,6 @@ void Graph::AddEdge(int u, int v, int idx, double w, bool toFront) {
     node->v = v;
     node->index = idx;
     node->w = w;
-
     if (toFront) {
         node->next = ADJ[u];
         ADJ[u] = node;
@@ -55,6 +57,10 @@ void Graph::ResetVertices() {
 
 void Graph::DijkstraSinglePair(int s, int t) {
     ResetVertices();
+    lastSource = s;
+    lastDest = t;
+    wasPair = true;
+
     pHEAP heap = CreateHeap(n);
     V[s]->key = 0;
     V[s]->color = GRAY;
@@ -86,10 +92,44 @@ void Graph::DijkstraSinglePair(int s, int t) {
 }
 
 void Graph::DijkstraSingleSource(int s) {
-    DijkstraSinglePair(s, -1);
+    ResetVertices();
+    lastSource = s;
+    lastDest = -1;
+    wasPair = false;
+
+    pHEAP heap = CreateHeap(n);
+    V[s]->key = 0;
+    V[s]->color = GRAY;
+    Insert(heap, V[s]);
+
+    while (heap->size > 0) {
+        pVERTEX u = ExtractMin(heap);
+        pNODE adj = ADJ[u->index];
+        while (adj) {
+            pVERTEX v = V[adj->v];
+            double newKey = u->key + adj->w;
+            if (v->color == WHITE) {
+                v->color = GRAY;
+                v->key = newKey;
+                v->pi = u->index;
+                Insert(heap, v);
+            } else if (v->color == GRAY && newKey < v->key) {
+                v->key = newKey;
+                v->pi = u->index;
+                DecreaseKey(heap, v->position, newKey);
+            }
+            adj = adj->next;
+        }
+        u->color = BLACK;
+    }
+    FreeHeap(heap);
 }
 
 void Graph::PrintPath(int s, int t, pSTACK stack) {
+    if (s != lastSource || (wasPair && t != lastDest)) {
+        printf("There is no path from %d to %d.\n", s, t);
+        return;
+    }
     if (V[t]->key == DBL_MAX) {
         printf("There is no path from %d to %d.\n", s, t);
         return;
@@ -102,21 +142,24 @@ void Graph::PrintPath(int s, int t, pSTACK stack) {
         Push(stack, cur);
         cur = V[cur]->pi;
     }
-
     while (!IsEmpty(stack)) {
         int v = Pop(stack);
-        printf("[%d:%8.2lf]", v, V[v]->key);  // FIXED spacing here
+        printf("[%d:%8.2lf]", v, V[v]->key);
         if (!IsEmpty(stack)) printf("-->");
     }
     printf(".\n");
 }
 
 void Graph::PrintLength(int s, int t) {
+    if (s != lastSource || (wasPair && t != lastDest)) {
+        printf("There is no path from %d to %d.\n", s, t);
+        return;
+    }
     if (V[t]->key == DBL_MAX) {
         printf("There is no path from %d to %d.\n", s, t);
     } else {
         printf("The length of the shortest path from %d to %d is:%8.2lf\n",
-            s, t, V[t]->key);  // FIXED spacing here
+            s, t, V[t]->key);
     }
 }
 
