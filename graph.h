@@ -5,12 +5,15 @@
 #include "heap.h"
 #include "stack.h"
 
-//holds adj lists and dijkstra methods
 class Graph {
 public:
-    int n;            // number of vertices
-    pVERTEX* V;      // vertex array (1-index)
-    pNODE* ADJ;      // adjacency lists
+    int n;
+    pVERTEX* V;
+    pNODE* ADJ;
+
+    int lastSource;
+    int lastDest;
+    bool wasPair;
 
     Graph(int n);
     void AddEdge(int u, int v, int idx, double w, bool toFront);
