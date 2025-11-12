@@ -6,7 +6,7 @@ Graph::Graph(int n) {
     this->n = n;
     V = (pVERTEX*)calloc(n+1, sizeof(pVERTEX));
     ADJ = (pNODE*)calloc(n+1, sizeof(pNODE));
-    for (int i=1;i<=n;i++) {
+    for (int i = 1; i <= n; i++) {
         V[i] = (pVERTEX)calloc(1, sizeof(VERTEX));
         V[i]->index = i;
     }
@@ -35,7 +35,7 @@ void Graph::AddEdge(int u, int v, int idx, double w, bool toFront) {
 }
 
 void Graph::PrintADJ() {
-    for (int i=1;i<=n;i++) {
+    for (int i = 1; i <= n; i++) {
         printf("ADJ[%d]:", i);
         pNODE t = ADJ[i];
         while (t) {
@@ -47,7 +47,7 @@ void Graph::PrintADJ() {
 }
 
 void Graph::ResetVertices() {
-    for (int i=1;i<=n;i++) {
+    for (int i = 1; i <= n; i++) {
         V[i]->key = DBL_MAX;
         V[i]->pi = 0;
         V[i]->color = WHITE;
@@ -126,7 +126,11 @@ void Graph::DijkstraSingleSource(int s) {
 }
 
 void Graph::PrintPath(int s, int t, pSTACK stack) {
-    if (s != lastSource || (wasPair && t != lastDest)) {
+    if (s != lastSource) {
+        printf("There is no path from %d to %d.\n", s, t);
+        return;
+    }
+    if (wasPair && t != lastDest) {
         printf("There is no path from %d to %d.\n", s, t);
         return;
     }
@@ -151,20 +155,24 @@ void Graph::PrintPath(int s, int t, pSTACK stack) {
 }
 
 void Graph::PrintLength(int s, int t) {
-    if (s != lastSource || (wasPair && t != lastDest)) {
+    if (s != lastSource) {
+        printf("There is no path from %d to %d.\n", s, t);
+        return;
+    }
+    if (wasPair && t != lastDest) {
         printf("There is no path from %d to %d.\n", s, t);
         return;
     }
     if (V[t]->key == DBL_MAX) {
         printf("There is no path from %d to %d.\n", s, t);
     } else {
-        printf("The length of the shortest path from %d to %d is:%8.2lf\n",
+        printf("The length of the shortest path from %d to %d is:%9.2lf\n",
             s, t, V[t]->key);
     }
 }
 
 Graph::~Graph() {
-    for (int i=1;i<=n;i++) {
+    for (int i = 1; i <= n; i++) {
         free(V[i]);
         pNODE cur = ADJ[i];
         while (cur) {
