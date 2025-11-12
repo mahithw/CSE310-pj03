@@ -2,7 +2,6 @@
 #include <cstdio>
 #include <cstdlib>
 
-// init graph, allocate arrays
 Graph::Graph(int n) {
     this->n = n;
     V = (pVERTEX*)calloc(n+1, sizeof(pVERTEX));
@@ -33,7 +32,6 @@ void Graph::AddEdge(int u, int v, int idx, double w, bool toFront) {
     }
 }
 
-// print lists, format super picky
 void Graph::PrintADJ() {
     for (int i=1;i<=n;i++) {
         printf("ADJ[%d]:", i);
@@ -46,7 +44,6 @@ void Graph::PrintADJ() {
     }
 }
 
-// reset before each dijkstra run
 void Graph::ResetVertices() {
     for (int i=1;i<=n;i++) {
         V[i]->key = DBL_MAX;
@@ -56,8 +53,6 @@ void Graph::ResetVertices() {
     }
 }
 
-// dijkstra, stoops early if t is found
-// maybe we still process neighbors first?
 void Graph::DijkstraSinglePair(int s, int t) {
     ResetVertices();
     pHEAP heap = CreateHeap(n);
@@ -90,18 +85,16 @@ void Graph::DijkstraSinglePair(int s, int t) {
     FreeHeap(heap);
 }
 
-// reuse pair code with fake targe
 void Graph::DijkstraSingleSource(int s) {
     DijkstraSinglePair(s, -1);
 }
 
-// print path using stack, backwards push
-// need exact format or points gone
 void Graph::PrintPath(int s, int t, pSTACK stack) {
     if (V[t]->key == DBL_MAX) {
         printf("There is no path from %d to %d.\n", s, t);
         return;
     }
+
     printf("The shortest path from %d to %d is:\n", s, t);
 
     int cur = t;
@@ -109,24 +102,24 @@ void Graph::PrintPath(int s, int t, pSTACK stack) {
         Push(stack, cur);
         cur = V[cur]->pi;
     }
+
     while (!IsEmpty(stack)) {
         int v = Pop(stack);
-        printf("[%d: %8.2lf]", v, V[v]->key);
+        printf("[%d:%8.2lf]", v, V[v]->key);  // FIXED spacing here
         if (!IsEmpty(stack)) printf("-->");
     }
     printf(".\n");
 }
 
-// print only distance
 void Graph::PrintLength(int s, int t) {
     if (V[t]->key == DBL_MAX) {
         printf("There is no path from %d to %d.\n", s, t);
     } else {
-        printf("The length of the shortest path from %d to %d is: %8.2lf\n", s, t, V[t]->key);
+        printf("The length of the shortest path from %d to %d is:%8.2lf\n",
+            s, t, V[t]->key);  // FIXED spacing here
     }
 }
 
-// free graph
 Graph::~Graph() {
     for (int i=1;i<=n;i++) {
         free(V[i]);
