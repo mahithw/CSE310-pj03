@@ -138,21 +138,22 @@ void Graph::PrintPath(int s, int t, pSTACK stack) {
     // Clear stack first
     while (!IsEmpty(stack)) Pop(stack);
     
-    // If no algorithm has been run yet, do nothing
+    // If no algorithm has been run yet, do nothing (invalid instruction)
     if (lastSource == -1) {
         return;
     }
 
+    // If source doesn't match, invalid instruction - return silently
     if (s != lastSource) {
-        printf("There is no path from %d to %d.\n", s, t);
         return;
     }
 
+    // If it was SinglePair and destination doesn't match, invalid instruction - return silently
     if (wasPair && t != lastDest) {
-        printf("There is no path from %d to %d.\n", s, t);
         return;
     }
 
+    // Now the instruction is VALID, check if path exists
     if (V[t]->key == DBL_MAX) {
         printf("There is no path from %d to %d.\n", s, t);
         return;
@@ -176,21 +177,22 @@ void Graph::PrintPath(int s, int t, pSTACK stack) {
 }
 
 void Graph::PrintLength(int s, int t) {
-    // If no algorithm has been run yet, do nothing
+    // If no algorithm has been run yet, do nothing (invalid instruction)
     if (lastSource == -1) {
         return;
     }
 
+    // If source doesn't match, invalid instruction - return silently
     if (s != lastSource) {
-        printf("There is no path from %d to %d.\n", s, t);
         return;
     }
 
+    // If it was SinglePair and destination doesn't match, invalid instruction - return silently
     if (wasPair && t != lastDest) {
-        printf("There is no path from %d to %d.\n", s, t);
         return;
     }
 
+    // Now the instruction is VALID, check if path exists
     if (V[t]->key == DBL_MAX) {
         printf("There is no path from %d to %d.\n", s, t);
     } else {
