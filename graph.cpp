@@ -135,23 +135,27 @@ void Graph::DijkstraSingleSource(int s) {
 }
 
 void Graph::PrintPath(int s, int t, pSTACK stack) {
+    // Clear stack first
+    while (!IsEmpty(stack)) Pop(stack);
+    
+    // If no algorithm has been run yet, do nothing
+    if (lastSource == -1) {
+        return;
+    }
 
     if (s != lastSource) {
         printf("There is no path from %d to %d.\n", s, t);
-        while (!IsEmpty(stack)) Pop(stack);
-        return;   // REQUIRED
+        return;
     }
 
     if (wasPair && t != lastDest) {
         printf("There is no path from %d to %d.\n", s, t);
-        while (!IsEmpty(stack)) Pop(stack);
-        return;   // REQUIRED
+        return;
     }
 
     if (V[t]->key == DBL_MAX) {
         printf("There is no path from %d to %d.\n", s, t);
-        while (!IsEmpty(stack)) Pop(stack);
-        return;   // REQUIRED
+        return;
     }
 
     printf("The shortest path from %d to %d is:\n", s, t);
@@ -172,15 +176,19 @@ void Graph::PrintPath(int s, int t, pSTACK stack) {
 }
 
 void Graph::PrintLength(int s, int t) {
+    // If no algorithm has been run yet, do nothing
+    if (lastSource == -1) {
+        return;
+    }
 
     if (s != lastSource) {
         printf("There is no path from %d to %d.\n", s, t);
-        return;   // REQUIRED
+        return;
     }
 
     if (wasPair && t != lastDest) {
         printf("There is no path from %d to %d.\n", s, t);
-        return;   // REQUIRED
+        return;
     }
 
     if (V[t]->key == DBL_MAX) {
